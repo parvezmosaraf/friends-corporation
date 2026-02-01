@@ -69,7 +69,7 @@ export default function Admin() {
             </h1>
             <p className="page-subtitle">Add, edit, and manage employee information</p>
           </div>
-          <Button onClick={handleAdd} className="gap-2">
+          <Button onClick={handleAdd} className="gap-2 w-full sm:w-auto min-h-touch">
             <Plus className="h-4 w-4" />
             Add Employee
           </Button>
@@ -158,20 +158,22 @@ export default function Admin() {
                       </div>
                     </div>
 
-                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8"
+                        className="h-min-touch w-min-touch min-w-[44px] min-h-[44px] sm:h-8 sm:w-8"
                         onClick={() => handleEdit(employee)}
+                        aria-label={`Edit ${employee.name}`}
                       >
                         <Edit2 className="h-4 w-4" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-destructive"
+                        className="h-min-touch w-min-touch min-w-[44px] min-h-[44px] sm:h-8 sm:w-8 text-destructive"
                         onClick={() => handleDeleteClick(employee)}
+                        aria-label={`Delete ${employee.name}`}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>

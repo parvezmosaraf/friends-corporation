@@ -116,7 +116,7 @@ export function EmployeeDialog({ open, onOpenChange, employee }: EmployeeDialogP
                 <FormItem>
                   <FormLabel>Employee ID</FormLabel>
                   <FormControl>
-                    <Input placeholder="EMP001" {...field} />
+                    <Input {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -130,7 +130,7 @@ export function EmployeeDialog({ open, onOpenChange, employee }: EmployeeDialogP
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="John Doe" {...field} />
+                    <Input {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -144,7 +144,7 @@ export function EmployeeDialog({ open, onOpenChange, employee }: EmployeeDialogP
                 <FormItem>
                   <FormLabel>Designation</FormLabel>
                   <FormControl>
-                    <Input placeholder="Manager" {...field} />
+                    <Input {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -158,7 +158,7 @@ export function EmployeeDialog({ open, onOpenChange, employee }: EmployeeDialogP
                 <FormItem>
                   <FormLabel>Base Salary</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="5000" {...field} />
+                    <Input type="number" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -174,7 +174,7 @@ export function EmployeeDialog({ open, onOpenChange, employee }: EmployeeDialogP
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a shop" />
+                        <SelectValue placeholder="" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>

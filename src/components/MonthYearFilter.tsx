@@ -24,13 +24,13 @@ export function MonthYearFilter({
   const years = Array.from({ length: 5 }, (_, i) => currentYear - 2 + i);
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full sm:w-auto">
       <Select
         value={month.toString()}
         onValueChange={(v) => onMonthChange(parseInt(v))}
       >
-        <SelectTrigger className="w-[140px]">
-          <SelectValue placeholder="Select month" />
+        <SelectTrigger className="w-full min-w-touch sm:w-[140px] min-h-touch">
+          <SelectValue placeholder="" />
         </SelectTrigger>
         <SelectContent>
           {MONTHS.map((m) => (
@@ -45,8 +45,8 @@ export function MonthYearFilter({
         value={year.toString()}
         onValueChange={(v) => onYearChange(parseInt(v))}
       >
-        <SelectTrigger className="w-[100px]">
-          <SelectValue placeholder="Year" />
+        <SelectTrigger className="w-full min-w-touch sm:w-[100px] min-h-touch">
+          <SelectValue placeholder="" />
         </SelectTrigger>
         <SelectContent>
           {years.map((y) => (

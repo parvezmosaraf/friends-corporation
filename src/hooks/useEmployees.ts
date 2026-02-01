@@ -15,7 +15,7 @@ export function useEmployees(shopId?: string) {
         query = query.eq('shop_id', shopId);
       }
       
-      const { data, error } = await query.order('name');
+      const { data, error } = await query.order('base_salary', { ascending: false });
       
       if (error) throw error;
       return data as Employee[];

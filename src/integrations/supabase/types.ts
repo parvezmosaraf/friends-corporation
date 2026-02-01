@@ -138,12 +138,47 @@ export type Database = {
         }
         Relationships: []
       }
+      leave_entries: {
+        Row: {
+          id: string
+          salary_record_id: string
+          leave_date: string
+          reason: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          salary_record_id: string
+          leave_date: string
+          reason?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          salary_record_id?: string
+          leave_date?: string
+          reason?: string | null
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leave_entries_salary_record_id_fkey"
+            columns: ["salary_record_id"]
+            isOneToOne: false
+            referencedRelation: "salary_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      check_admin_login: {
+        Args: { p_username: string; p_password: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never

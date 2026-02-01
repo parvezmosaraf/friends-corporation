@@ -4,6 +4,27 @@
 @tailwind components;
 @tailwind utilities;
 
+/* PWA safe area insets (notch, status bar, home indicator) */
+@layer utilities {
+  .pt-safe-top {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  .pb-safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .pl-safe-left {
+    padding-left: env(safe-area-inset-left, 0px);
+  }
+  .pr-safe-right {
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+  /* Horizontal content padding: at least 20px or safe area, so content isn't cut off on mobile */
+  .px-content {
+    padding-left: max(1.25rem, env(safe-area-inset-left, 0px));
+    padding-right: max(1.25rem, env(safe-area-inset-right, 0px));
+  }
+}
+
 @layer base {
   :root {
     --background: 210 20% 98%;
@@ -132,9 +153,14 @@
     @apply border-border;
   }
 
+  html {
+    overflow-x: hidden;
+  }
+
   body {
     @apply bg-background text-foreground font-sans antialiased;
     font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -189,7 +215,7 @@
   }
 
   .stat-card {
-    @apply relative overflow-hidden rounded-2xl p-6 transition-all duration-300;
+    @apply relative overflow-hidden rounded-2xl p-4 sm:p-6 transition-all duration-300 min-w-0;
     background: var(--gradient-card);
     box-shadow: var(--shadow-md);
   }
@@ -200,7 +226,7 @@
   }
 
   .shop-card {
-    @apply relative overflow-hidden rounded-3xl p-8 cursor-pointer transition-all duration-500;
+    @apply relative overflow-hidden rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8 cursor-pointer transition-all duration-500 min-w-0;
     box-shadow: var(--shadow-lg);
   }
 
@@ -214,11 +240,11 @@
   }
 
   .data-table th {
-    @apply px-4 py-3 text-left font-medium text-muted-foreground bg-muted/50;
+    @apply px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium text-muted-foreground bg-muted/50 whitespace-nowrap;
   }
 
   .data-table td {
-    @apply px-4 py-3 border-b border-border/50;
+    @apply px-2 sm:px-4 py-2 sm:py-3 border-b border-border/50 text-xs sm:text-sm;
   }
 
   .data-table tr:hover td {
@@ -230,11 +256,11 @@
   }
 
   .page-title {
-    @apply text-3xl md:text-4xl font-bold tracking-tight;
+    @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight break-words;
   }
 
   .page-subtitle {
-    @apply text-muted-foreground mt-2;
+    @apply text-sm sm:text-base text-muted-foreground mt-1 sm:mt-2 break-words;
   }
 
   .input-field {

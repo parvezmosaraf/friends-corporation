@@ -1,73 +1,60 @@
-# Welcome to your Lovable project
+# Payroll Pal | Friends Corporation
 
-## Project info
+Payroll and salary management for Friends Corporation — manage salaries across your shops.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Getting started
 
-## How can I edit this code?
-
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+**Requirements:** Node.js and npm ([install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
+# Clone the repository
 git clone <YOUR_GIT_URL>
+cd payroll-pal
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
+# Install dependencies
 npm i
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start the development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Open [http://localhost:8080](http://localhost:8080) in your browser.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Default admin login
 
-**Use GitHub Codespaces**
+The app uses username-only auth. The default admin is set in the database via `supabase/migrations/20260202000000_admin_users_username_auth.sql`.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- **Username:** `friendscorporation`
+- **Password:** `AsdAsd777@#`
 
-## What technologies are used for this project?
+Run the Supabase migrations so the `admin_users` table and preset admin exist. The login form is pre-filled with these defaults.
 
-This project is built with:
+## PWA (Progressive Web App)
+
+Payroll Pal is a PWA with its own icon and manifest:
+
+- **Install** on phone or desktop (Add to Home Screen / Install app).
+- **Offline** — app shell and cached data work without network.
+- **Auto-update** — new versions prompt to reload.
+
+The app icon (৳ on navy gradient) is in `public/icon.svg`. PNG icons (192×192 and 512×512) are generated for the PWA install prompt via `npm run generate-pwa-icons` (runs automatically before `npm run build`). For the **install icon** to appear in the browser, use the **production** build: run `npm run build` then `npm run preview`, and open the preview URL (e.g. http://localhost:4173). Chrome requires PNG icons and a registered service worker, which are only active in the built app.
+
+## Tech stack
 
 - Vite
 - TypeScript
 - React
 - shadcn-ui
 - Tailwind CSS
+- Supabase
+- PWA (vite-plugin-pwa)
 
-## How can I deploy this project?
+## Deploy
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+Build for production:
 
-## Can I connect a custom domain to my Lovable project?
+```sh
+npm run build
+```
 
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Deploy the `dist/` folder to any static host (Vercel, Netlify, etc.). Serve over HTTPS for full PWA install support.

@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { BarChart3 } from 'lucide-react';
 import {
@@ -25,8 +26,23 @@ const COLORS = ['hsl(199, 89%, 48%)', 'hsl(142, 76%, 36%)'];
 
 export default function Analytics() {
   const currentDate = new Date();
+  const [searchParams] = useSearchParams();
   const [month, setMonth] = useState(currentDate.getMonth() + 1);
   const [year, setYear] = useState(currentDate.getFullYear());
+
+  // Sync with URL when navigating from dashboard stat cards (e.g. /analytics?month=2&year=2026)
+  useEffect(() => {
+    const m = searchParams.get('month');
+    const y = searchParams.get('year');
+    if (m != null && y != null) {
+      const monthNum = parseInt(m, 10);
+      const yearNum = parseInt(y, 10);
+      if (monthNum >= 1 && monthNum <= 12 && yearNum >= 2000 && yearNum <= 2100) {
+        setMonth(monthNum);
+        setYear(yearNum);
+      }
+    }
+  }, [searchParams]);
 
   const { data: shops } = useShops();
   const classioShop = shops?.find((s) => s.name === 'Classio');
@@ -84,24 +100,25 @@ export default function Analytics() {
         </motion.div>
 
         {/* Charts Grid */}
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-2 min-w-0">
           {/* Bar Chart */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
+            className="min-w-0"
           >
             <Card>
               <CardHeader>
                 <CardTitle>Payroll Comparison</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-[300px]">
+                <div className="h-[240px] sm:h-[280px] md:h-[300px] w-full min-w-0">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={barData}>
                       <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
                       <XAxis dataKey="name" />
-                      <YAxis tickFormatter={(value) => `$${value / 1000}k`} />
+                      <YAxis tickFormatter={(value) => `৳${value / 1000}k`} />
                       <Tooltip
                         formatter={(value: number) => formatCurrency(value)}
                         contentStyle={{
@@ -124,13 +141,14 @@ export default function Analytics() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
+            className="min-w-0"
           >
             <Card>
               <CardHeader>
                 <CardTitle>Payroll Distribution</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-[300px]">
+                <div className="h-[240px] sm:h-[280px] md:h-[300px] w-full min-w-0">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
@@ -178,7 +196,7 @@ export default function Analytics() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="grid gap-4 md:grid-cols-2"
+          className="grid gap-4 grid-cols-1 md:grid-cols-2 min-w-0"
         >
           <Card className="gradient-classio text-white">
             <CardHeader>

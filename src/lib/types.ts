@@ -36,6 +36,14 @@ export interface SalaryRecord {
   employee?: Employee;
 }
 
+export interface LeaveEntry {
+  id: string;
+  salary_record_id: string;
+  leave_date: string; // YYYY-MM-DD
+  reason: string | null;
+  created_at: string;
+}
+
 export interface PayrollSummary {
   totalPayroll: number;
   totalPaid: number;
@@ -62,6 +70,15 @@ export const MONTHS: MonthOption[] = [
   { value: 12, label: 'December' },
 ];
 
+/** Attendance and salary are calculated on a 30-day month for every month. */
+export const ATTENDANCE_DAYS_PER_MONTH = 30;
+
+/**
+ * Salary calculation (BDT):
+ * Daily Rate = Base_Salary / 30 (every month is 30 days for attendance).
+ * Total = (Attendance × Daily Rate) + (Paid Leave × Daily Rate) + Bonus + Increment − Advance − Penalty.
+ * Full attendance = 30/30 = full Base Salary.
+ */
 export function calculateSalary(
   baseSalary: number,
   attendanceDays: number,
@@ -70,9 +87,9 @@ export function calculateSalary(
   incrementAdjustment: number,
   advanceTaken: number,
   penalty: number,
-  daysInMonth: number = 30
+  _daysInMonth?: number // ignored; always 30 for calculation
 ): number {
-  const dailyRate = baseSalary / daysInMonth;
+  const dailyRate = baseSalary / ATTENDANCE_DAYS_PER_MONTH;
   const total =
     attendanceDays * dailyRate +
     paidLeave * dailyRate +
@@ -84,9 +101,9 @@ export function calculateSalary(
 }
 
 export function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat('en-BD', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'BDT',
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   }).format(amount);

@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { SalaryRecord, PayrollSummary, calculateSalary } from '@/lib/types';
+import { SalaryRecord, PayrollSummary, calculateSalary, ATTENDANCE_DAYS_PER_MONTH } from '@/lib/types';
 import { toast } from 'sonner';
 
 export function useSalaryRecords(shopId?: string, month?: number, year?: number) {
@@ -22,12 +22,26 @@ export function useSalaryRecords(shopId?: string, month?: number, year?: number)
       
       if (error) throw error;
       
-      // Filter by shop if provided
-      let records = data as SalaryRecord[];
+      // Filter by shop if provided (employee may be object or array from join)
+      let records = (data || []) as SalaryRecord[];
       if (shopId) {
-        records = records.filter(r => r.employee?.shop_id === shopId);
+        records = records.filter(r => {
+          const emp = r.employee;
+          const shopIdFromEmp = Array.isArray(emp) ? emp[0]?.shop_id : (emp as { shop_id?: string })?.shop_id;
+          return shopIdFromEmp === shopId;
+        });
       }
-      
+      // Normalize: ensure employee is a single object for UI
+      records = records.map(r => ({
+        ...r,
+        employee: Array.isArray(r.employee) ? r.employee[0] : r.employee,
+      })) as SalaryRecord[];
+      // Stable sort by employee_id so row order doesn't change after save/refetch
+      records.sort((a, b) => {
+        const idA = (a.employee as { employee_id?: string })?.employee_id ?? '';
+        const idB = (b.employee as { employee_id?: string })?.employee_id ?? '';
+        return idA.localeCompare(idB, undefined, { numeric: true });
+      });
       return records;
     },
   });
@@ -138,11 +152,39 @@ export function useCreateSalaryRecord() {
   });
 }
 
+const SALARY_RECORD_UPDATE_KEYS = [
+  'attendance_days', 'leave_unpaid', 'advance_taken', 'bonus',
+  'penalty', 'increment_adjustment', 'total_calculated', 'status',
+] as const;
+
+function buildSalaryRecordUpdate(payload: Partial<SalaryRecord> & { id: string }): Record<string, number | string> {
+  const { id: _id, ...rest } = payload;
+  const update: Record<string, number | string> = {};
+  for (const key of SALARY_RECORD_UPDATE_KEYS) {
+    if (key in rest && rest[key as keyof typeof rest] !== undefined) {
+      const v = rest[key as keyof typeof rest];
+      if (key === 'status') {
+        update[key] = String(v);
+      } else {
+        update[key] = Number(v);
+      }
+    }
+  }
+  return update;
+}
+
 export function useUpdateSalaryRecord() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async ({ id, ...updates }: Partial<SalaryRecord> & { id: string }) => {
+    mutationFn: async (payload: Partial<SalaryRecord> & { id: string }) => {
+      const id = payload.id;
+      const updates = buildSalaryRecordUpdate(payload);
+      if (Object.keys(updates).length === 0) {
+        const { data, error } = await supabase.from('salary_records').select('*').eq('id', id).single();
+        if (error) throw error;
+        return data as SalaryRecord;
+      }
       const { data, error } = await supabase
         .from('salary_records')
         .update(updates)
@@ -203,25 +245,25 @@ export function useGenerateSalaryRecords() {
       
       if (empError) throw empError;
       
-      // Get days in month
-      const daysInMonth = new Date(year, month, 0).getDate();
-      
-      // Create records for each employee
-      const records = employees.map(emp => ({
-        employee_id: emp.id,
-        month,
-        year,
-        attendance_days: daysInMonth,
-        leave_unpaid: 0,
-        paid_leave: 0,
-        advance_taken: 0,
-        bonus: 0,
-        penalty: 0,
-        increment_adjustment: 0,
-        days_in_month: daysInMonth,
-        total_calculated: Number(emp.base_salary),
-        status: 'Pending' as const,
-      }));
+      // Attendance is always 30 days every month
+      const records = employees.map(emp => {
+        const base = Number(emp.base_salary);
+        return {
+          employee_id: emp.id,
+          month,
+          year,
+          attendance_days: ATTENDANCE_DAYS_PER_MONTH,
+          leave_unpaid: 0,
+          paid_leave: 0,
+          advance_taken: 0,
+          bonus: 0,
+          penalty: 0,
+          increment_adjustment: 0,
+          days_in_month: ATTENDANCE_DAYS_PER_MONTH,
+          total_calculated: calculateSalary(base, ATTENDANCE_DAYS_PER_MONTH, 0, 0, 0, 0, 0),
+          status: 'Pending' as const,
+        };
+      });
       
       const { error } = await supabase
         .from('salary_records')
