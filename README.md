@@ -24,8 +24,8 @@ Open [http://localhost:8080](http://localhost:8080) in your browser.
 
 The app uses username-only auth. The default admin is set in the database via `supabase/migrations/20260202000000_admin_users_username_auth.sql`.
 
-- **Username:** `friendscorporation`
-- **Password:** `AsdAsd777@#`
+- **Username:** `***********`
+- **Password:** `***********`
 
 Run the Supabase migrations so the `admin_users` table and preset admin exist. The login form is pre-filled with these defaults.
 
