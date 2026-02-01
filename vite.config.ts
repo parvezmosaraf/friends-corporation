@@ -19,9 +19,9 @@ export default defineConfig(({ mode }) => ({
       registerType: "autoUpdate",
       includeAssets: ["icon.svg", "icon-192.png", "icon-512.png", "robots.txt"],
       manifest: {
-        id: "payroll-pal-pwa",
-        name: "Payroll Pal | Friends Corporation",
-        short_name: "Payroll Pal",
+        id: "friends-corporation-pwa",
+        name: "Friends Corporation",
+        short_name: "Friends Corporation",
         description: "Friends Corporation — Manage salaries and payroll across your shops.",
         theme_color: "#0f172a",
         background_color: "#ffffff",
