@@ -9,15 +9,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 
-const PRESET_ADMIN_USERNAME = 'friendscorporation';
-const PRESET_ADMIN_PASSWORD = 'AsdAsd777@#';
-
 export default function Login() {
   const { user, loading: authLoading, signIn } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const [username, setUsername] = useState(PRESET_ADMIN_USERNAME);
-  const [password, setPassword] = useState(PRESET_ADMIN_PASSWORD);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -122,7 +119,7 @@ export default function Login() {
           </CardContent>
         </Card>
         <p className="mt-6 text-center text-sm text-muted-foreground">
-          Default admin: <strong>{PRESET_ADMIN_USERNAME}</strong> / preset password. No email required.
+          Use your admin username and password. No email required.
         </p>
       </motion.div>
     </div>
